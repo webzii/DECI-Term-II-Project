@@ -1,34 +1,27 @@
-import sharp from 'sharp'
 import path from 'path'
 import fs from 'fs'
+import sharp from 'sharp'
 
-const outputDir = path.join(__dirname, `../uploads`)
+const cacheDir = path.join(__dirname, '../cache')
 
-// Ensuring that the output directory exists
-if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, {recursive: true})
-}
-
-export async function resizeImage(
+export const resizeImage = async (
     filename: string,
     width: number,
-    height: number
-): Promise<string> {
-    const inputPath = path.join(__dirname, `../images/`, filename)
-    const outputPath = path.join(
-        outputDir,
-        `${path.parse(filename).name}-${width}x${height}.jpg`
-    )
-
-    // If the image is already cached, return its path
-    if (fs.existsSync(outputPath)) {
-        return outputPath
+    height: number)
+    : Promise<string> => {
+    const cachePath = path.join(cacheDir, `${width}x${height}-${filename}`)
+    // Check if resized image exists in the cache
+    if (fs.existsSync(cachePath)) {
+        return cachePath // Return cached image path if it exists
     }
 
-    await sharp(inputPath)
-    .resize(width, height)
-    .jpeg()
-    .toFile(outputPath)
+    const inputImagePath = path.join(__dirname, '../images', filename)
+    const outputImagePath = cachePath
 
-    return outputPath
+    // Resize image using Sharp and save to cache
+    await sharp(inputImagePath)
+    .resize(width, height)
+    .toFile(outputImagePath)
+
+    return outputImagePath // Return the path of the newly resized image
 }

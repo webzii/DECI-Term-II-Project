@@ -100,13 +100,58 @@ This test verifies that the `/api/resize` endpoint behaves as expected by checki
   - Invalid inputs
   - Error conditions
 
-#### 1. Image Processing Test
+#### 2. Image Processing Test
 This test validates the image resizing functionality using Sharp by checking:
 
 - Correct image resizing operation
 - Accurate output when resizing:
   - Different image types
   - Various dimension combinations
+
+---
+
+## Image Upload Endpoint
+
+### Upload an Image
+
+**URL:** `/api/upload`
+
+**Method:** `POST`
+
+**Form Data:**
+- `image` (Required): The image file to upload (JPEG, PNG, GIF).
+
+**Response Example:**
+
+  ```json
+  {
+    "message": "Image uploaded successfully",
+    "filename": "1630443642463.jpg"
+  }
+  ```
+
+### Resize an Uploaded Image
+
+**URL:** `/api/resize`
+
+**Method:** `GET`
+
+**Query Parameters:**
+- `filename` (Required): The name of the uploaded image (e.g., `fjord.jpg`).
+- `width` (Required): The width to resize the image to (e.g., `300`).
+- `height` (Required): The height to resize the image to (e.g., `300`).
+
+**Response Example:**
+A resized `.jpg` image if the input parameters are valid.
+
+**Exmple cURL Request:**
+  ```bash
+  curl "http://localhost:3000/api/resize?filename=1630443642463.jpg&width=300&height=300" --output resized_image.jpg
+  ```
+
+### Additional Considerations
+- The file upload size limit is set to `15MB`. You can adjust this by changing the `limits` option in `uploadConfig.ts`.
+- Only `.jpg`, `.jpeg`, `.png`, and `.gif` images are accepted. You can change the accepted file types in the `fileFilter` function if needed.
 
 ---
 
