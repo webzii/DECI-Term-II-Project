@@ -1,0 +1,47 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "This project aims to give you a real-world scenario in which you would read and write to your disk via a Node.js express server rather than a database. The project you create serves two purposes: to prepare you for setting up scalable code and architecture for real-world projects and tie together some of the most popular middleware and utilities found in Node.js projects. This project barely touches the surface of what is possible but will prove your ability to use what you’ve learned in real-world scenarios.",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node starter/server.ts",
+    "build": "tsc",
+    "dev": "ts-node starter/server.ts",
+    "test": "jasmine",
+    "test:unit": "jasmine",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udacity/deci-l4-web-image-placeholder-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/udacity/deci-l4-web-image-placeholder-app/issues"
+  },
+  "homepage": "https://github.com/udacity/deci-l4-web-image-placeholder-app#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^1.4.5-lts.2",
+    "sharp": "^0.34.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/jasmine": "^5.1.7",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.15.0",
+    "@types/sharp": "^0.31.1",
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-jasmine": "^4.2.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "jasmine": "^5.6.0",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

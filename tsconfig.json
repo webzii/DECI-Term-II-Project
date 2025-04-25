@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "types": ["jasmine"],
+    "target": "ES6",
+    "module": "CommonJS",
+    "rootDir": "./starter",
+    "outDir": "./starter/dist",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["starter/**/*.ts"],
+  "exclude": ["node_modules"]
+}
