@@ -108,6 +108,7 @@ This test validates the image resizing functionality using Sharp by checking:
   - Different image types
   - Various dimension combinations
 
+---
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
