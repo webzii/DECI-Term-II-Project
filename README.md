@@ -70,6 +70,45 @@ GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
 
 ---
 
+## Testing
+This project uses jasmine for testing image resizing functionality and the API endpoint.
+
+### Setting Up Tests
+1. Install dependencies: If you haven’t done so already, make sure all necessary dependencies, including Jasmine, are installed:
+  ```bash
+  npm install
+  ```
+
+2. Test Files: The tests are located in the `tests/` directory. The primary test file is `imageService.test.ts`, which contains the tests for the image processing logic.
+
+3. Run Tests: To run the tests, you can use the following command:
+  ```bash
+  npm test
+  ```
+
+### Writing Tests
+The project includes two key types of tests to ensure functionality and reliability:
+
+#### 1. API Endpoint Test
+This test verifies that the `/api/resize` endpoint behaves as expected by checking:
+
+- Proper handling of valid inputs:
+  - Filename
+  - Width
+  - Height
+- Appropriate status codes returned for:
+  - Invalid inputs
+  - Error conditions
+
+#### 1. Image Processing Test
+This test validates the image resizing functionality using Sharp by checking:
+
+- Correct image resizing operation
+- Accurate output when resizing:
+  - Different image types
+  - Various dimension combinations
+
+
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
 

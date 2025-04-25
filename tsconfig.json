@@ -8,6 +8,6 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["starter/**/*.ts"],
+  "include": ["starter/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -7,7 +7,7 @@
     "start": "ts-node starter/server.ts",
     "build": "tsc",
     "dev": "ts-node starter/server.ts",
-    "test": "jasmine",
+    "test": "npx jasmine",
     "test:unit": "jasmine",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
@@ -34,6 +34,7 @@
     "@types/jasmine": "^5.1.7",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.15.0",
+    "@types/request": "^2.48.12",
     "@types/sharp": "^0.31.1",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
@@ -41,6 +42,7 @@
     "eslint-plugin-prettier": "^5.2.6",
     "jasmine": "^5.6.0",
     "prettier": "^3.5.3",
+    "request": "^2.88.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
