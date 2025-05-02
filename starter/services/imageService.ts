@@ -2,21 +2,22 @@ import path from 'path'
 import fs from 'fs'
 import sharp from 'sharp'
 
-const cacheDir = path.join(__dirname, '../cache')
+const cacheDir = path.join(__dirname, '../cache') // Define the directory for cached images
 
 export const resizeImage = async (
     filename: string,
     width: number,
     height: number)
     : Promise<string> => {
-    const cachePath = path.join(cacheDir, `${width}x${height}-${filename}`)
+    const cachePath = path.join(cacheDir, `${width}x${height}-${filename}`) // Construct path for cached resized image
+
     // Check if resized image exists in the cache
     if (fs.existsSync(cachePath)) {
         return cachePath // Return cached image path if it exists
     }
 
-    const inputImagePath = path.join(__dirname, '../../uploads', filename)
-    const outputImagePath = cachePath
+    const inputImagePath = path.join(__dirname, '../../uploads', filename) // Construct full path to the original uploaded image
+    const outputImagePath = cachePath // Set the output path for the resized image
 
     // Resize image using Sharp and save to cache
     await sharp(inputImagePath)

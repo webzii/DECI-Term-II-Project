@@ -1,2 +1,1 @@
 import 'ts-node/register'
-

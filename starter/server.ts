@@ -2,25 +2,25 @@ import express from 'express'
 import imageRoutes from './routes/imageRoutes'
 import path from 'path'
 
-const app = express()
-const PORT = 3000
+const app = express() // Create an instance of the express app
+const PORT = 3000 // Define the port where the server will run
 
 // Serve Frontend Static Files from the 'public' folder
-app.use(express.static(path.join(__dirname, `..`, `starter`, `public`)))
+app.use(express.static(path.join(__dirname, `..`, `starter`, `public`))) // Serve static assets like HTML, CSS, and JS files
 
 // Serve Uploaded Images
-app.use(`/uploads`, express.static(path.join(__dirname, `..`, `uploads`)))
+app.use(`/uploads`, express.static(path.join(__dirname, `..`, `uploads`))) // Serve uploaded images from the 'uploads' directory
 
 // API Routes
-app.use(`/api`, imageRoutes)
+app.use(`/api`, imageRoutes) // Register image-related API routes under the '/api' path
 
 // Fallback to index.html for root access
-app.get(`/`, (_req, res) => {
-    res.sendFile(path.join(__dirname, `..`, `starter`, `public`, `index.html`))
+app.get(`/`, (_req, res) => { // Serve the main HTML page when visiting the root URL
+    res.sendFile(path.join(__dirname, `..`, `starter`, `public`, `index.html`)) // Send the 'index.html' file as a response
 })
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`)
+app.listen(PORT, () => { // Start the server and listen on the specified port
+    console.log(`Server is running at http://localhost:${PORT}`) // Log the server URL to the console
 })
 
-export default app
+export default app // Export the app instance for use in other files (e.g., testing, server setup)
