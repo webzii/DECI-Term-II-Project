@@ -1,12 +1,16 @@
 import multer from 'multer'
 import path from 'path'
 
+// Set up storage config for multer
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../uploads'),
-    filename: (req, file, cb) => {
-        const uniqueName = `img${Date.now()}${path.extname(file.originalname)}`
-        cb(null, uniqueName)
+    destination: (req, file, cb) => {
+        // Define the uplaods folder path
+        cb(null, path.join(__dirname, '../uploads'))
     },
+    filename: (req, file, cb) => {
+        // Use original filename
+        cb(null, file.originalname)
+    }
 })
 
 const fileFilter = (req: any, file: any, cb: any) => {

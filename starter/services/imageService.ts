@@ -15,7 +15,7 @@ export const resizeImage = async (
         return cachePath // Return cached image path if it exists
     }
 
-    const inputImagePath = path.join(__dirname, '../images', filename)
+    const inputImagePath = path.join(__dirname, '../../uploads', filename)
     const outputImagePath = cachePath
 
     // Resize image using Sharp and save to cache

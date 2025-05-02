@@ -2,20 +2,26 @@
 
 ## Overview
 
-This project is a basic TypeScript + Node.js + Express application designed to resize `.jpg` images using the Sharp library. It provides a RESTful API for resizing images, caching them to optimize performance, and serving them back to the client. The project is beginner-friendly and follows best practices, making it an excellent learning resource for developers exploring Express and image processing.
+This project is a full-stack TypeScript + Node.js + Express application designed to resize `.jpg`, `.png`, or `.gif` images using the Sharp library. It provides both:
+- A **RESTful API** for uploading, resizing, and serving images, and
+- A **simple frontend interface** that allows users to upload images, view them in a gallery, select images to resize, and preview results in the browser.
+The project supports image caching for optimized performance and follows best practices for modular and scalable Express development. It also includes linting, formatting, and unit testing to ensure code quality and reliability.
 
 ---
 
 ## Key Features
 
-- **Resize `.jpg` Images**: Resize images by specifying width and height through the API.
-- **API Endpoint for Resizing**: Simple and accessible API endpoint (GET `/api/resize`) for handling image resizing requests.
-- **Image Caching**: Caching of resized images to avoid redundant processing for repeated requests.
-- **Scalable Express Server**: Modular server design for scalability and maintainability.
-- **Image Processing with Sharp**: Leverages the Sharp library for fast and efficient image resizing and transformations.
-- **Unit Testing**: Includes unit tests to validate the image resizing logic.
-- **Beginner-Friendly**: Easy-to-follow code with best practices for TypeScript, Express, and image processing.
-- **Prettier and ESLint Integration**: Automated code formatting and linting to ensure code quality.
+- **Interactive Web Interface**: Includes a frontend UI to upload images, preview them in a gallery, select files from a dropdown, and trigger resizing directly from the browser.
+- **Resize `.jpg`, `.png`, and `.gif` Images**: Resize images by specifying width and height via the API or the web interface.
+- **API Endpoint for Resizing**: Accessible API endpoint (GET `/api/resize`) for handling image resizing requests.
+- **Upload Endpoint**: Upload new images through a POST `/api/upload` endpoint, either via form or UI.
+- **Image Gallery**: Automatically displays uploaded images in a gallery view.
+- **Dynamic Image Selection**: Select images for resizing from a dropdown populated with available uploaded filenames.
+- **Image Caching**: Avoids redundant processing by caching resized images.
+- **Scalable Express Server**: Modular structure allows for maintainability and growth.
+- **Image Processing with Sharp**: Fast, efficient, and production-grade image manipulation.
+- **Unit Testing**: Jasmine tests to validate both resizing logic and API behavior.
+- **Prettier and ESLint Integration**: Enforces clean, consistent code through automated formatting and linting.
 
 ---
 
@@ -68,100 +74,150 @@ GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
   npm run lint
   ```
 
----
+### Step 8: Enable FrontEnd Interface
 
-## Testing
-This project uses jasmine for testing image resizing functionality and the API endpoint.
+1. Serve Static Frontend Files
+- In `server.ts`, serve the frontend HTML and script files by adding:
+  ```ts
+  app.use(express.static(path.join(__dirname, `..`, `starter`, `public`)))
+  ```
+- Ensure you have a `starter/public/` directory with:
+  - `index.html`
+  - `style.css`
+  - `script.js`
 
-### Setting Up Tests
-1. Install dependencies: If you haven’t done so already, make sure all necessary dependencies, including Jasmine, are installed:
+2. Update Folder Structure
+- Ensure these folders exist:
   ```bash
-  npm install
+  mkdir -p starter/public uploads starter/images starter/cache
   ```
 
-2. Test Files: The tests are located in the `tests/` directory. The primary test file is `imageService.test.ts`, which contains the tests for the image processing logic.
-
-3. Run Tests: To run the tests, you can use the following command:
-  ```bash
-  npm test
+3. Fix Upload Path and Serve Uploaded Images
+- In `uploadConfig.ts`, change the upload destination to:
+  ```ts
+  destination: (req, file, cb) => {
+    // Define the uplaods folder path
+    cb(null, path.join(__dirname, '../uploads'))
+  }
+  ```
+- In `server.ts`, serve uploaded images statically:
+  ```ts
+  app.use(`/uploads`, express.static(path.join(__dirname, `..`, `uploads`)))
   ```
 
-### Writing Tests
-The project includes two key types of tests to ensure functionality and reliability:
-
-#### 1. API Endpoint Test
-This test verifies that the `/api/resize` endpoint behaves as expected by checking:
-
-- Proper handling of valid inputs:
-  - Filename
-  - Width
-  - Height
-- Appropriate status codes returned for:
-  - Invalid inputs
-  - Error conditions
-
-#### 2. Image Processing Test
-This test validates the image resizing functionality using Sharp by checking:
-
-- Correct image resizing operation
-- Accurate output when resizing:
-  - Different image types
-  - Various dimension combinations
-
----
-
-## Image Upload Endpoint
-
-### Upload an Image
-
-**URL:** `/api/upload`
-
-**Method:** `POST`
-
-**Form Data:**
-- `image` (Required): The image file to upload (JPEG, PNG, GIF).
-
-**Response Example:**
-
-  ```json
-  {
-    "message": "Image uploaded successfully",
-    "filename": "1630443642463.jpg"
+4. Update Filename Generation Logic
+- Modify file naming logic in `uploadConfig.ts` to retain the original filename instead of generating random ones. This makes uploaded files recognizable in the dropdown menu:
+  ```ts
+  filename: (req, file, cb) => {
+    // Use original filename
+    cb(null, file.originalname)
   }
   ```
 
-### Resize an Uploaded Image
-
-**URL:** `/api/resize`
-
-**Method:** `GET`
-
-**Query Parameters:**
-- `filename` (Required): The name of the uploaded image (e.g., `fjord.jpg`).
-- `width` (Required): The width to resize the image to (e.g., `300`).
-- `height` (Required): The height to resize the image to (e.g., `300`).
-
-**Response Example:**
-A resized `.jpg` image if the input parameters are valid.
-
-**Exmple cURL Request:**
-  ```bash
-  curl "http://localhost:3000/api/resize?filename=1630443642463.jpg&width=300&height=300" --output resized_image.jpg
+5. Fix JSON Structure for Image List API
+- In `listImagesHandler` inside `imageRoutes.ts`, return just an array of strings instead of an object:
+  ```ts
+  res.status(200).json(images)
   ```
 
-### Additional Considerations
-- The file upload size limit is set to `15MB`. You can adjust this by changing the `limits` option in `uploadConfig.ts`.
-- Only `.jpg`, `.jpeg`, `.png`, and `.gif` images are accepted. You can change the accepted file types in the `fileFilter` function if needed.
+6. Frontend Gallery Script Enhancements
+- The script.js was updated to:
+  - Fetch uploaded image filenames from `/api/images`
+  - Populate a `<select>` dropdown and display a preview gallery
+  - Submit uploads using a form and reload the gallery after upload
+  - Open the resized image in a new tab using query parameters
+- Example request:
+  ```js
+  GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
+  ```
+
+---
+
+## Testing
+
+- This project uses Jasmine for unit testing backend functionality and includes manual testing guidelines for the frontend interface.
+
+1. Backend Tests (Automated)
+- Location: `tests/` directory (e.g., `imageService.spec.ts`)
+- Covered:
+  - Image Processing with Sharp
+    - Resizes image to specified dimensions
+    - Handles invalid image inputs
+  - API Endpoint `/api/resize`
+    - Returns status 200 for valid requests
+    - Returns 400 or 500 for missing/invalid parameters
+
+2. Frontend Tests (Manual)
+- Since the frontend is lightweight, manual testing is currently recommended.
+- Test the following manually:
+  - Image Upload Flow
+    - Upload an image via the form
+    - Confirm it's visible in the gallery and dropdown list
+  - Resizing Functionality
+    - Select an image, input valid width/height
+    - Click Resize and verify output image opens correctly in a new tab
+  - Dynamic UI Updates
+    - New uploads appear without refreshing
+    - Gallery and dropdown update immediately
+
+---
+
+## API Endpoints
+- This project exposes the following RESTful API endpoints:
+
+### `GET /api/resize`
+- Resizes an existing image with specified dimensions using Sharp.
+- **Query Parameters**:
+  - `filename` (string, required): Name of the image (e.g., `fjord.jpg`)
+  - `width` (number, required): Desired width (e.g., `300`)
+  - `height` (number, required): Desired height (e.g., `300`)
+- Example Request:
+  ```bash
+  curl "http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300" --output resized_image.jpg
+  ```
+- Success Response:
+  - Returns the resized image file.
+- Error Responses:
+  - `400`: Invalid or missing query parameters
+  - `500`: Failed to process image
+
+### `POST /api/upload`
+- Uploads a new image file to the server.
+- **Form Data**:
+  - `image` (File, required): The image file to upload (JPEG, PNG, or GIF)
+- Success Response:
+  ```JSON
+  {
+    "message": "File Uploaded Successfully",
+    "file": "your_uploaded_filename.jpg"
+  }
+  ```
+- Error Response:
+  - `400`: No file was uploaded or the file type is not accepted
+- Notes:
+  - Maximum file size is `15MB`
+  - Accepted formats: `.jpg`, `.jpeg`, `.png`, `.gif`
+  - Uploaded files are saved in the `/uploads/` directory
+
+### `GET /api/images`
+- Returns a list of uploaded image filenames.
+- Success Response:
+  ```JSON
+  [
+    "uploadedImage.jpg",
+    "anotherUploadedImage.png",
+    "anotherAnotherUploadedImage.gif"
+  ]
+  ```
+- Error Response:
+  - 500: Could not read uploads folder
+- Use Case:
+  - Useful for dynamically loading available images in the frontend (e.g., in a gallery or dropdown selector).
 
 ---
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
-
----
-
-## License
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 

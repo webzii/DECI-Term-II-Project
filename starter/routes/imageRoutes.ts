@@ -1,12 +1,15 @@
-import express, { RequestHandler, Request, Response } from 'express';
-import { resizeImage } from '../services/imageService';
-import upload from '../uploadConfig'; // Importing the Multer config
+import express, { RequestHandler, Request, Response } from 'express'
+import { resizeImage } from '../services/imageService'
+import upload from '../uploadConfig' // Importing the Multer config
+import fs from 'fs'
+import path from 'path'
 
-// Handler for image resizing
-export const resizeHandler: RequestHandler = async (req, res) => {
-    const { filename, width, height } = req.query;
+const router = express.Router()
 
-    // Check for missing or invalid query parameters
+// Handler: Resize Image Endpoint
+const resizeHandler: RequestHandler = async (req, res) => {
+    const {filename, width, height} = req.query
+
     if (
         !filename ||
         !width ||
@@ -14,48 +17,59 @@ export const resizeHandler: RequestHandler = async (req, res) => {
         isNaN(Number(width)) ||
         isNaN(Number(height))
     ) {
-        res.status(400).json({ error: `Invalid query parameters` });
-        return;
+        res.status(400).json({error: 'Invalid query parameters'})
     }
 
     try {
-        // Call resizeImage function which checks for cache and resizes if necessary
         const resizedImagePath = await resizeImage(
             filename as string,
             Number(width),
             Number(height)
-        );
+        )
 
-        // Send the resized (or cached) image
-        res.sendFile(resizedImagePath);
+        res.sendFile(resizedImagePath)
     } catch (err: any) {
-        console.error(`Error while processing the image`, err);
-        res.status(500).json({ error: `Failed to process image: ${err.message}` });
+        res.status(500).json({error: `Failed to process image: ${err.message}`})
     }
-};
+}
 
-// Handler for image upload
-export const uploadHandler: RequestHandler = (req: Request, res: Response): void => {
-    // Multer handles the upload and places the file in the specified folder
+// Handler: Upload Image Endpoint
+const uploadHandler: RequestHandler = (req, res) => {
     if (!req.file) {
-        res.status(400).json({ error: 'No file uploaded' });
-        return;
+        res.status(400).json({error: `No file uploaded`})
+        return
     }
 
-    // Send a response with the file path
+    console.log('Uploaded File: ', req.file)
+
     res.status(200).json({
-        message: 'File uploaded successfully',
-        file: req.file
-    });
-};
+        message: `File Uploaded Successfully`,
+        file: req.file.filename,
+    })
+}
 
-// Define the route for resizing images
-const router = express.Router();
+// Handler: Get List of Uploaded Images Filenames
+const listImagesHandler: RequestHandler = (req, res) => {
+    const uploadsDir = path.join(__dirname, '..', '..', 'uploads')
+    console.log('Reading from: ', uploadsDir)
 
-// Route to resize images
-router.get('/resize', resizeHandler);
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            console.error('Failed to read uploads Directory: ', err)
+            return res.status(500).json({error: 'Could not read uploads folder'})
+        }
 
-// Route to upload images
-router.post('/upload', upload.single('image'), uploadHandler); // 'image' is the name of the field for the uploaded file
+        const images = files.filter(file =>
+            /\.(jpg|jpeg|png|gif)$/i.test(file)
+        )
 
-export default router;
+        res.status(200).json(images)
+    })
+}
+
+// Route Mapping
+router.get('/resize', resizeHandler)
+router.post('/upload', upload.single('image'), uploadHandler)
+router.get('/images', listImagesHandler)
+
+export default router
