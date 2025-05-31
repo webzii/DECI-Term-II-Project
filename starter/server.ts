@@ -1,4 +1,4 @@
-import express from 'express'
+import express, {Request, Response, NextFunction} from 'express'
 import imageRoutes from './routes/imageRoutes'
 import path from 'path'
 
@@ -22,5 +22,10 @@ app.get(`/`, (_req, res) => { // Serve the main HTML page when visiting the root
 app.listen(PORT, () => { // Start the server and listen on the specified port
     console.log(`Server is running at http://localhost:${PORT}`) // Log the server URL to the console
 })
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error('[SERVER ERROR]', err.message);
+    res.status(500).json({ error: err.message });
+});
 
 export default app // Export the app instance for use in other files (e.g., testing, server setup)

@@ -3,6 +3,7 @@ import { resizeImage } from '../services/imageService'
 import upload from '../uploadConfig' // Importing the Multer config
 import fs from 'fs'
 import path from 'path'
+import multer from 'multer'
 
 const router = express.Router() // Create an instance of Express router
 
@@ -36,19 +37,17 @@ const resizeHandler: RequestHandler = async (req, res) => {
 }
 
 // Handler: Upload Image Endpoint
-const uploadHandler: RequestHandler = (req, res) => {
+const uploadHandler: RequestHandler = (req, res): void => {
     if (!req.file) {
-        res.status(400).json({error: `No file uploaded`}) // Return error if no file
-        return
+        res.status(400).json({ error: 'Invalid file type. Only JPG, PNG, and JPEG are allowed (max 15MB).' });
+        return;
     }
 
-    console.log('Uploaded File: ', req.file) // Log uploaded file info
-
     res.status(200).json({
-        message: `File Uploaded Successfully`,
-        file: req.file.filename, // Return the uploaded filename
-    })
-}
+        message: 'File Uploaded successfully',
+        file: req.file.filename,
+    });
+};
 
 // Handler: Get List of Uploaded Images Filenames
 const listImagesHandler: RequestHandler = (req, res) => {
@@ -64,7 +63,7 @@ const listImagesHandler: RequestHandler = (req, res) => {
 
         // Filter out only image files based on file extensions
         const images = files.filter(file =>
-            /\.(jpg|jpeg|png|gif)$/i.test(file)
+            /\.(jpg|jpeg|png)$/i.test(file)
         )
 
         res.status(200).json(images) // Respond with the list of image filenames
@@ -73,7 +72,7 @@ const listImagesHandler: RequestHandler = (req, res) => {
 
 // Route Mapping
 router.get('/resize', resizeHandler)
-router.post('/upload', upload.single('image'), uploadHandler)
+router.post('/upload', upload.single('image'), uploadHandler);
 router.get('/images', listImagesHandler)
 
 export default router // Export the router for use in the main server file

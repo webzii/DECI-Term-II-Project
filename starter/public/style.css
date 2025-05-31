@@ -42,7 +42,7 @@ h2 {
 .imgUploadInput {
     font-size: 1rem;
     padding: 0.5em;
-    border: 0.125em solid #a3aaae;
+    border: 0.125em solid #208dcc;
     border-radius: 0.3125em;
     width: 100%;
     cursor: pointer;
@@ -74,7 +74,7 @@ h2 {
     padding: 0.625em;
     font-size: 1rem;
     border-radius: 0.3125em;
-    border: 0.125em solid #a3aaae;
+    border: 0.125em solid #208dcc;
     width: 100%;
     max-width: 9.375em;
     margin: 0.3125em;
@@ -92,7 +92,7 @@ h2 {
     width: 9.375em;
     height: 6.25em;
     object-fit: cover;
-    border: 0.125em solid #a3aaae;
+    border: 0.125em solid #208dcc;
     border-radius: 0.375em;
     transition: transform 0.3s ease;
 }
@@ -105,7 +105,7 @@ h2 {
     padding: 0.625em;
     font-size: 1rem;
     border-radius: 0.3125em;
-    border: 0.125em solid #a3aaae;
+    border: 0.125em solid #208dcc;
     width: 100%;
     max-width: 18.75em;
 }

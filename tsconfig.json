@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "types": ["jasmine"],
     "target": "ES6",
     "module": "CommonJS",
-    "rootDir": "./starter",
+    "rootDir": ".",
     "outDir": "./starter/dist",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["node", "jasmine"],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["starter/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["starter/**/*.ts", "./spec/**/*.ts"],
+  "exclude": ["node_modules", "starter/dist"]
 }

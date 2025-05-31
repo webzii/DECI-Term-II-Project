@@ -38,34 +38,42 @@ async function loadImgs() {
 }
 
 // Upload Image
-uploadForm.addEventListener(`submit`, async (e) => {
-    e.preventDefault() // Prevent default form submission behavior
+// Upload Image
+uploadForm.addEventListener('submit', async (e) => {
+    e.preventDefault()
 
-    const fileInput = document.getElementById(`imgUpload`) // Get file input element
-    const file = fileInput.files[0] // Get selected file
+    const formData = new FormData(uploadForm)
+    const fileInput = document.querySelector('input[type="file"]')
+    const file = fileInput?.files[0]
+
     if (!file) {
-        alert(`Please choose a file to upload`) // Alert if no file selected
+        alert('Please select a file to upload.')
         return
     }
 
-    const formData = new FormData()
-    formData.append(`image`, file) // Append file to FormData
-
     try {
-        // Send file to server using POST request
-        const res = await fetch(`/api/upload/`, {
-            method: `POST`,
-            body: formData
+        const res = await fetch('/api/images/upload', {
+            method: 'POST',
+            body: formData,
         })
 
-        if (!res.ok) {
-            const data = await res.json()
-            alert(`Upload failed: ${data.error}`) // Alert on failure
-        }
+        const contentType = res.headers.get('content-type')
 
-        await loadImgs() // Refresh gallery after upload
+        if (contentType && contentType.includes('application/json')) {
+            const data = await res.json()
+            if (!res.ok) {
+                throw new Error(data.error || 'Unknown upload error')
+            }
+            alert(data.message)
+            loadImgs() // Refresh gallery on success
+        } else {
+            const text = await res.text()
+            console.error('Non-JSON response from server:', text)
+            alert('Upload failed. Server returned invalid response.')
+        }
     } catch (err) {
-        console.error(`Upload Failed: `, err) // Log upload error
+        console.error('Upload error:', err)
+        alert(err.message || 'Failed to upload image')
     }
 })
 
