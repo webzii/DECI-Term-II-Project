@@ -38,30 +38,28 @@ async function loadImgs() {
 }
 
 // Upload Image
-uploadForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(uploadForm);
+uploadForm.addEventListener(`submit`, async (e) => {
+    e.preventDefault()
+    const formData = new FormData(uploadForm)
 
     try {
         const res = await fetch('/api/images/upload', {
             method: 'POST',
             body: formData
-        });
+        })
 
-        const data = await res.json();
+        const data = await res.json()
 
         if (!res.ok) {
-            // Show error immediately
-            alert(data.error || 'Upload failed. Unknown error.');
-            return;
+            throw new Error(data.error || 'Unknown Upload Error')
         }
 
-        alert(data.message);
-        loadImgs(); // Refresh gallery without page reload
+        alert(data.message)
+        loadImgs() // Refresh gallery
     } catch (err) {
-        alert('Upload failed. Server returned invalid response.');
+        alert(`Upload failed: ${err.message}`) // <== This now handles .jpg rejection
     }
-});
+})
 
 // Resize Image
 resizeBtn.addEventListener(`click`, () => {

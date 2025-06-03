@@ -69,7 +69,18 @@ const listImagesHandler: RequestHandler = (req, res) => {
 
 // Route Mapping
 router.get('/resize', resizeHandler)
-router.post('/upload', upload.single('image'), uploadHandler)
+router.post(
+    'upload',
+    (req, res, next) => {
+        upload.single('image')(req, res, (err: any) => {
+            if (err) {
+                res.status(400).json({error: err.message})
+            }
+            next()
+        })
+    },
+    uploadHandler
+)
 router.get('/images', listImagesHandler)
 
 export default router // Export the router for use in the main server file
