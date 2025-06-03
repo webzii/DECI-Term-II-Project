@@ -1,11 +1,9 @@
 {
-  "spec_dir": "spec",
-  "spec-file": [
-    "**/*[sS]pec.ts"
+  "spec_dir": "tests",
+  "spec_files": [
+    "**/*.test.ts"
   ],
   "helpers": [
-    "helpers/**/*.ts"
-  ],
-  "stopSpecOnExpectationFailure": false,
-  "random": false
+    "../node_modules/ts-node/register"
+  ]
 }
