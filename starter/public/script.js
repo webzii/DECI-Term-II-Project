@@ -38,44 +38,30 @@ async function loadImgs() {
 }
 
 // Upload Image
-// Upload Image
 uploadForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-
-    const formData = new FormData(uploadForm)
-    const fileInput = document.querySelector('input[type="file"]')
-    const file = fileInput?.files[0]
-
-    if (!file) {
-        alert('Please select a file to upload.')
-        return
-    }
+    e.preventDefault();
+    const formData = new FormData(uploadForm);
 
     try {
         const res = await fetch('/api/images/upload', {
             method: 'POST',
-            body: formData,
-        })
+            body: formData
+        });
 
-        const contentType = res.headers.get('content-type')
+        const data = await res.json();
 
-        if (contentType && contentType.includes('application/json')) {
-            const data = await res.json()
-            if (!res.ok) {
-                throw new Error(data.error || 'Unknown upload error')
-            }
-            alert(data.message)
-            loadImgs() // Refresh gallery on success
-        } else {
-            const text = await res.text()
-            console.error('Non-JSON response from server:', text)
-            alert('Upload failed. Server returned invalid response.')
+        if (!res.ok) {
+            // Show error immediately
+            alert(data.error || 'Upload failed. Unknown error.');
+            return;
         }
+
+        alert(data.message);
+        loadImgs(); // Refresh gallery without page reload
     } catch (err) {
-        console.error('Upload error:', err)
-        alert(err.message || 'Failed to upload image')
+        alert('Upload failed. Server returned invalid response.');
     }
-})
+});
 
 // Resize Image
 resizeBtn.addEventListener(`click`, () => {

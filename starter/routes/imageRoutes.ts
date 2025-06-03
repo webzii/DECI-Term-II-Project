@@ -37,17 +37,14 @@ const resizeHandler: RequestHandler = async (req, res) => {
 }
 
 // Handler: Upload Image Endpoint
-const uploadHandler: RequestHandler = (req, res): void => {
+const uploadHandler = (req: Request, res: Response): void => {
     if (!req.file) {
-        res.status(400).json({ error: 'Invalid file type. Only JPG, PNG, and JPEG are allowed (max 15MB).' });
-        return;
+        res.status(400).json({ error: 'No file uploaded' })
+        return
     }
 
-    res.status(200).json({
-        message: 'File Uploaded successfully',
-        file: req.file.filename,
-    });
-};
+    res.status(200).json({ message: 'Upload successful', filename: req.file.filename })
+}
 
 // Handler: Get List of Uploaded Images Filenames
 const listImagesHandler: RequestHandler = (req, res) => {
@@ -72,7 +69,7 @@ const listImagesHandler: RequestHandler = (req, res) => {
 
 // Route Mapping
 router.get('/resize', resizeHandler)
-router.post('/upload', upload.single('image'), uploadHandler);
+router.post('/upload', upload.single('image'), uploadHandler)
 router.get('/images', listImagesHandler)
 
 export default router // Export the router for use in the main server file

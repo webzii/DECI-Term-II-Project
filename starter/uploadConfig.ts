@@ -3,25 +3,29 @@ import multer, {FileFilterCallback} from 'multer'
 import { Request } from 'express'
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../uploads'))
-    },
+    destination: './uploads',
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname)
-    }
+        const ext = path.extname(file.originalname)
+        const filename = `${Date.now()}_${Math.round(Math.random() * 1e9)}${ext}`
+        cb(null, filename)
+    },
 })
 
-const fileFilter = (
+function fileFilter(
     req: Request,
     file: Express.Multer.File,
     cb: FileFilterCallback
-    ) => {
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only .jpg, .jpeg, and .png formats allowed!'));
-        }
-    };
+) {
+    const allowedTypes = /jpeg|jpg|png/
+    const ext = path.extname(file.originalname).toLowerCase()
+    const isValid = allowedTypes.test(ext)
+
+    if (isValid) {
+        cb(null, true)
+    } else {
+        cb(new Error('Invalid file type. Only .jpg, .jpeg, and .png are allowed.'))
+    }
+}
 
 export const upload = multer({
     storage,
