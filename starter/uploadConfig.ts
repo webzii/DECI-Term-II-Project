@@ -9,12 +9,16 @@ const storage = multer.diskStorage({
     },
 })
 
-function fileFilter(req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) {
-    const ext = path.extname(file.originalname).toLowerCase()
-    if (ext !== '.jpg' && ext !== '.jpeg') {
-        return cb(new Error('Only .jpg images are allowed.'))
+const fileFilter = (
+    req: Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true)
+    } else {
+        cb(new Error('Only .jpeg, .jpg, and .png files are allowed'))
     }
-    cb(null, true)
 }
 
 export const upload = multer({

@@ -70,7 +70,7 @@ const listImagesHandler: RequestHandler = (req, res) => {
 // Route Mapping
 router.get('/resize', resizeHandler)
 router.post(
-    'upload',
+    '/upload',
     (req, res, next) => {
         upload.single('image')(req, res, (err: any) => {
             if (err) {
