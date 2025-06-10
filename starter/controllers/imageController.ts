@@ -1,8 +1,12 @@
-// Import Request and Response types from Express
-import {Request, Response} from 'express'
+import { Request, Response } from "express"
 
-// Health check handler that returns "pong"
-export const ping = (req: Request, res: Response) => {
-    // Health check handler that returns "pong"
-    res.status(200).json({message: `pong`})
+export const uploadImage = async (req: Request, res: Response) => {
+    try {
+        if (!req.file) {
+            throw new Error('No File Uploaded')
+        }
+        res.status(200).json({message: 'Image Uploaded', __filename: req.file.filename})
+    } catch (error: any) {
+        res.status(400).json({error: error.message})
+    }
 }
