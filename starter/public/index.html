@@ -9,7 +9,7 @@
     <body>
         <h1>PSYCH's Image Resizer</h1>
 
-        <form id="uploadForm" class="uploadForm">
+        <form id="uploadForm" class="uploadForm" enctype="multipart/form-data" method="post" action="/api/upload">
             <input type="file" id="imgUpload" class="imgUploadInput" name="image" accept=".jpg, .jpeg, .png" required/>
             <button type="submit" id="imgSubmitBtn" class="imgSubmitBtn">Upload Image</button>
         </form>
@@ -24,6 +24,6 @@
         <h2>Gallery</h2>
         <div id="gallery" class="gallery"></div>
 
-        <script src="script.js"></script>
+        <script src="script.js" defer></script>
     </body>
 </html>

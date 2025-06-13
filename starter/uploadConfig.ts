@@ -1,34 +1,32 @@
+import multer, { FileFilterCallback } from 'multer'
 import path from 'path'
-import multer, {FileFilterCallback} from 'multer'
 import { Request } from 'express'
 
 const storage = multer.diskStorage({
-    destination: 'uploads/',
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`)
+    destination: (_req, _file, cb) => {
+        cb(null, path.join(__dirname, '..', 'uploads')) // Make sure this folder exists!
     },
+    filename: (_req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`)
+    }
 })
 
 const fileFilter = (
-    req: Express.Request,
+    _req: Request,
     file: Express.Multer.File,
-    cb: multer.FileFilterCallback
+    cb: FileFilterCallback
 ) => {
-    const allowedExtensions = ['.jpg', '.jpeg', '.png']
     const ext = path.extname(file.originalname).toLowerCase()
-
-    if (allowedExtensions.includes(ext)) {
+    if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') {
         cb(null, true)
     } else {
         cb(new Error('Only .jpg, .jpeg, and .png files are allowed.'))
     }
 }
 
-export const upload = multer({
+const upload = multer({
     storage,
-    limits: {
-        fileSize: 15 * 1024 * 1024
-    }, 
+    limits: { fileSize: 15 * 1024 * 1024 }, // 15 MB
     fileFilter
 })
 

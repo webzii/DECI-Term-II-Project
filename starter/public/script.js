@@ -1,81 +1,92 @@
 // Get references to DOM elements
-const gallery = document.getElementById(`gallery`)
-const imgSelect = document.getElementById(`imgSelect`)
-const uploadForm = document.getElementById(`uploadForm`)
-const imgSubmitBtn = document.getElementById(`imgSubmitBtn`)
-const resizeBtn = document.getElementById(`resizeBtn`)
+const gallery = document.getElementById('gallery')
+const imgSelect = document.getElementById('imgSelect')
+const uploadForm = document.getElementById('uploadForm')
+const resizeBtn = document.getElementById('resizeBtn')
 
-const widthInput = document.getElementById(`widthInput`)
-const heightInput = document.getElementById(`heightInput`)
+const widthInput = document.getElementById('widthInput')
+const heightInput = document.getElementById('heightInput')
 
 // Fetch Image List from Server
 async function loadImgs() {
-    try{
-        // Fetch list of image filenames from backend
-        const res = await fetch(`/api/images`)
+    try {
+        const res = await fetch('/api/images')
         const filenames = await res.json()
 
-        // Clear previous gallery content and dropdown options
-        gallery.innerHTML = ``
-        imgSelect.innerHTML = ``
+        // Clear previous content
+        gallery.innerHTML = ''
+        imgSelect.innerHTML = ''
 
-        // Loop through filenames and display images in gallery and options in dropdown
         filenames.forEach((filename) => {
-            const img = document.createElement(`img`)
-            img.src = `../uploads/${filename}` // Set image source path
-            img.alt = filename // Set alt text
-            img.width = 100 // Thumbnail size
-            gallery.appendChild(img) // Add image to gallery
+            const img = document.createElement('img')
+            img.src = `/uploads/${filename}`
+            img.alt = filename
+            img.width = 100
+            gallery.appendChild(img)
 
-            const option = document.createElement(`option`)
-            option.value = filename // Set option value to filename
-            option.textContent = filename // Display filename in dropdown
-            imgSelect.appendChild(option) // Add option to select dropdown
+            const option = document.createElement('option')
+            option.value = filename
+            option.textContent = filename
+            imgSelect.appendChild(option)
         })
     } catch (err) {
-        console.error(`Error loading image: `, err) // Log any fetch error
+        console.error('Error loading images:', err)
     }
 }
 
 // Upload Image
-uploadForm.addEventListener(`submit`, async (e) => {
+uploadForm.addEventListener('submit', async (e) => {
     e.preventDefault()
-    const formData = new FormData(uploadForm)
+
+    const fileInput = document.querySelector('input[type="file"]')
+    if (!fileInput.files.length) {
+        alert('Please select a file.')
+        return
+    }
+
+    const formData = new FormData()
+    formData.append('image', fileInput.files[0])
 
     try {
-        const res = await fetch('/api/images/upload', {
+        const res = await fetch('/api/upload', {
             method: 'POST',
-            body: formData
+            body: formData,
         })
 
-        const data = await res.json()
+        const contentType = res.headers.get('content-type')
 
         if (!res.ok) {
-            throw new Error(data.error || 'Unknown Upload Error')
+            const errorText = contentType?.includes('application/json')
+                ? (await res.json()).error
+                : await res.text()
+            throw new Error(errorText || 'Upload failed')
         }
 
-        alert(data.message)
+        const result = await res.json()
+        alert(result.message)
+        console.log(result)
+
         loadImgs() // Refresh gallery
     } catch (err) {
-        alert(`Upload failed: ${err.message}`) // <== This now handles .jpg rejection
+        alert('Upload Failed: ' + err.message)
+        console.error(err)
     }
 })
 
 // Resize Image
-resizeBtn.addEventListener(`click`, () => {
-    const filename = imgSelect.value // Get selected filename
-    const width = widthInput.value // Get width input value
-    const height = heightInput.value // Get height input value
+resizeBtn.addEventListener('click', () => {
+    const filename = imgSelect.value
+    const width = widthInput.value
+    const height = heightInput.value
 
     if (!filename || !width || !height) {
-        alert(`Please provide filename, width, and height`) // Validate inputs
+        alert('Please provide filename, width, and height')
         return
     }
 
-    // Open resized image in a new browser tab
-    const resizedURL = `/api/resize?filename=${filename}&&width=${width}&&height=${height}`
-    window.open(resizedURL, `_blank`)
+    const resizedURL = `/api/resize?filename=${filename}&width=${width}&height=${height}`
+    window.open(resizedURL, '_blank')
 })
 
 // Initial Load
-loadImgs() // Load images when the page first loads
+loadImgs()

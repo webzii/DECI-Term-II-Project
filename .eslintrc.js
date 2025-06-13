@@ -1,11 +1,9 @@
-import tsEslintPlugin from '@typescript-eslint/eslint-plugin'
-
-export default {
+module.exports = {
     env: {
         node: true,
         es2021: true,
         browser: true,
-        jasmine: true,
+        jasmine: true
     },
     extends: [
         'eslint:recommended',
@@ -19,16 +17,14 @@ export default {
         project: './tsconfig.json',
         tsConfigRootDir: __dirname
     },
-    plugins: [
-        tsEslintPlugin
-    ],
+    plugins: ['@typescript-eslint'],
     rules: {
         '@typescript-eslint/explicit-function-return-type': 'warn',
         '@typescript-eslint/explicit-module-boundary-types': 'warn',
         '@typescript-eslint/no-explicit-any': 'warn',
-        '@typescript-eslint/no-unused-vars': ['warn', {argsIgnorePattern: '^_'}],
+        '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
         '@typescript-eslint/consistent-type-imports': 'warn',
-        'no-constant-condition': ['error', {checkLoops: false}],
+        'no-constant-condition': ['error', { checkLoops: false }],
         'no-console': 'warn',
         'no-debugger': 'error',
         'no-duplicate-imports': 'error',
@@ -41,7 +37,18 @@ export default {
     },
     overrides: [
         {
-            files: ['**/*.test.ts', '**/*.spec.ts', '**/*[sS]pec.ts', '**/*[tT]est.ts', '*.test.ts', '*.spec.ts', '*[sS]pec.ts', '*[tT]est.ts'],
+            files: ['**/*.spec.ts', '**/*.test.ts'],
+            env: {
+                jasmine: true,
+                node: true
+            },
+            globals: {
+                describe: 'readonly',
+                it: 'readonly',
+                expect: 'readonly',
+                beforeEach: 'readonly',
+                afterEach: 'readonly'
+            },
             rules: {
                 '@typescript-eslint/no-non-null-assertions': 'off',
                 '@typescript-eslint/no-explicit-any': 'off'
