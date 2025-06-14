@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
-    "rootDir": ".",
     "outDir": "./starter/dist",
+    "rootDir": "./starter",
+    "target": "es6",
+    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node", "jasmine"],
-    "typeRoots": ["./node_modules/@types"]
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-  "include": ["starter/**/*.ts", "./spec/**/*.ts"],
-  "exclude": ["node_modules", "starter/dist"]
+  "include": ["./starter/**/*.ts"],
+  "exclude": ["./node_modules", "./starter/dist"]
 }

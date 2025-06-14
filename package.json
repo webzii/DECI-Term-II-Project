@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node starter/server.ts",
-    "build": "ts-node starter/server.ts",
+    "build": "tsc",
     "dev": "ts-node starter/server.ts",
-    "test": "jasmine",
+    "test": "npm run build && jasmine",
     "test:unit": "jasmine",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
