@@ -2,7 +2,12 @@ import express, { Request, Response, Router } from 'express'
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
-import { resizeImage } from '../services/imageService'
+import { resizeImage } from '../services/imageService.js'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const router: Router = express.Router()
 
@@ -19,10 +24,10 @@ const upload = multer({
     limits: { fileSize: 15 * 1024 * 1024 }, // 15MB
     fileFilter: (_req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase()
-        if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') {
+        if (ext === '.jpg') {
             cb(null, true)
         } else {
-            const error = new Error('Only .jpg, .jpeg, and .png files are allowed.')
+            const error = new Error('Only files are allowed.')
             console.error('Multer fileFilter error:', error.message)
             cb(error)
         }
@@ -80,7 +85,7 @@ router.get('/images', (req: Request, res: Response): void => {
             return
         }
 
-        const images = files.filter(file => /\.(jpg|jpeg|png)$/i.test(file))
+        const images = files.filter(file => /\.(jpg)$/i.test(file))
         res.status(200).json(images)
     })
 })

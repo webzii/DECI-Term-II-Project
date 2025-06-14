@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a full-stack TypeScript + Node.js + Express application designed to resize `.jpeg`, `.jpg`, or `.png` images using the Sharp library. It provides both:
+This project is a full-stack TypeScript + Node.js + Express application designed to resize `.jpg` images using the Sharp library. It provides both:
 - A **RESTful API** for uploading, resizing, and serving images, and
 - A **simple frontend interface** that allows users to upload images, view them in a gallery, select images to resize, and preview results in the browser.
 The project supports image caching for optimized performance and follows best practices for modular and scalable Express development. It also includes linting, formatting, and unit testing to ensure code quality and reliability.
@@ -12,7 +12,7 @@ The project supports image caching for optimized performance and follows best pr
 ## Key Features
 
 - **Interactive Web Interface**: Includes a frontend UI to upload images, preview them in a gallery, select files from a dropdown, and trigger resizing directly from the browser.
-- **Resize `.jpeg`, `.jpg`, and `.png` Images**: Resize images by specifying width and height via the API or the web interface.
+- **Resize `.jpg` Images**: Resize images by specifying width and height via the API or the web interface.
 - **API Endpoint for Resizing**: Accessible API endpoint (GET `/api/resize`) for handling image resizing requests.
 - **Upload Endpoint**: Upload new images through a POST `/api/upload` endpoint, either via form or UI.
 - **Image Gallery**: Automatically displays uploaded images in a gallery view.
@@ -184,7 +184,7 @@ GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
 ### `POST /api/upload`
 - Uploads a new image file to the server.
 - **Form Data**:
-  - `image` (File, required): The image file to upload (JPEG, JPG, or PNG)
+  - `image` (File, required): The image file to upload (JPG)
 - Success Response:
   ```JSON
   {
@@ -196,7 +196,7 @@ GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
   - `400`: No file was uploaded or the file type is not accepted
 - Notes:
   - Maximum file size is `15MB`
-  - Accepted formats: `.jpg`, `.jpeg`, and `.png`.
+  - Accepted formats: `.jpg`.
   - Uploaded files are saved in the `/uploads/` directory
 
 ### `GET /api/images`
@@ -204,9 +204,7 @@ GET http://localhost:3000/api/resize?filename=fjord.jpg&width=300&height=300
 - Success Response:
   ```JSON
   [
-    "uploadedImage.jpg",
-    "anotherUploadedImage.png",
-    "anotherAnotherUploadedImage.jpeg"
+    "uploadedImage.jpg"
   ]
   ```
 - Error Response:

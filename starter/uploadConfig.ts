@@ -1,6 +1,11 @@
 import multer, { FileFilterCallback } from 'multer'
 import path from 'path'
 import { Request } from 'express'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
@@ -17,10 +22,10 @@ const fileFilter = (
     cb: FileFilterCallback
 ) => {
     const ext = path.extname(file.originalname).toLowerCase()
-    if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') {
+    if (ext === '.jpg') {
         cb(null, true)
     } else {
-        cb(new Error('Only .jpg, .jpeg, and .png files are allowed.'))
+        cb(new Error('Only .jpg files are allowed.'))
     }
 }
 

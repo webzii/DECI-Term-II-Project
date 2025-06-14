@@ -1,6 +1,11 @@
 import path from 'path'
 import fs from 'fs'
 import sharp from 'sharp'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const cacheDir = path.join(__dirname, '../cache') // Define the directory for cached images
 

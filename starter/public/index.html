@@ -10,9 +10,11 @@
         <h1>PSYCH's Image Resizer</h1>
 
         <form id="uploadForm" class="uploadForm" enctype="multipart/form-data" method="post" action="/api/upload">
-            <input type="file" id="imgUpload" class="imgUploadInput" name="image" accept=".jpg, .jpeg, .png" required/>
+            <input type="file" id="imgUpload" class="imgUploadInput" name="image" accept=".jpg" required/>
             <button type="submit" id="imgSubmitBtn" class="imgSubmitBtn">Upload Image</button>
         </form>
+
+        <div id="errorMsg" style="color: red; margin-top: 10px;"></div>
 
         <div class="resizeControls">
             <select id="imgSelect" class="imgSelect"></select>

@@ -76,11 +76,17 @@ uploadForm.addEventListener('submit', async (e) => {
 // Resize Image
 resizeBtn.addEventListener('click', () => {
     const filename = imgSelect.value
-    const width = widthInput.value
-    const height = heightInput.value
+    const width = Number(widthInput.value)
+    const height = Number(heightInput.value)
 
-    if (!filename || !width || !height) {
-        alert('Please provide filename, width, and height')
+    // Validate numeric and positive inputs
+    if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+        alert("Please enter valid positive values for width and height.")
+        return
+    }
+
+    if (!filename) {
+        alert('Please select a filename.')
         return
     }
 

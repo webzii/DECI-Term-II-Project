@@ -2,13 +2,17 @@
   "compilerOptions": {
     "outDir": "./starter/dist",
     "rootDir": "./starter",
-    "target": "es6",
-    "module": "commonjs",
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
   "include": ["./starter/**/*.ts"],
-  "exclude": ["./node_modules", "./starter/dist"]
+  "exclude": ["./node_modules", "./starter/dist"],
+  "ts-node": {
+    "esm": true
+  }
 }
