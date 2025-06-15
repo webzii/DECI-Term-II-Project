@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["./starter/**/*.ts"],
+  "include": ["./starter/**/*", "./starter/tests/*"],
   "exclude": ["./node_modules", "./starter/dist"],
   "ts-node": {
     "esm": true
