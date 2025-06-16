@@ -1,18 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./starter/dist",
-    "rootDir": "./starter",
-    "target": "es2020",
-    "module": "esnext",
+    "target": "ES2020",
+    "module": "ESNext",
     "moduleResolution": "node",
-    "strict": true,
+    "outDir": "dist",
+    "rootDir": "src",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "strict": true
   },
-  "include": ["./starter/**/*", "./starter/tests/*"],
-  "exclude": ["./node_modules", "./starter/dist"],
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["src"]
 }

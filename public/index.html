@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; padding: 20px }
+        .gallery img { width: 150px; height: auto; margin: 10px }
+    </style>
+</head>
+<body>
+    <h1>Image Resizer</h1>
+    <h3>Upload a JPG Image</h3>
+    <form id="uploadForm">
+        <input type="file" name="image" accept="image/jpeg" />
+        <button type="submit">Upload</button>
+    </form>
+
+    <h3>Resize an Image</h3>
+    <form id="resizeForm">
+        <input name="filename" placeholder="Filename" required />
+        <input name="width" type="number" placeholder="Width" required />
+        <input name="height" type="number" placeholder="Height" required />
+        <button type="submit">Resize</button>
+    </form>
+
+    <h3>Gallery</h3>
+    <div class="gallery" id="gallery"></div>
+
+    <script>
+        const gallery = document.getElementById('gallery')
+
+        async function loadGallery() {
+            gallery.innerHTML = ''
+            const res = await fetch('/api/images/gallery')
+            const filenames = await res.json()
+            filenames.forEach((file) => {
+                const img = document.createElement('img')
+                img.src = `/images/full/${file}`
+                gallery.appendChild(img)
+            })
+        }
+
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.target)
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            const msg = await res.text()
+            alert(msg)
+            loadGallery() // Reload gallery after upload
+        }
+
+        document.getElementById('resizeForm').onsubmit = async (e) => {
+            e.preventDefault()
+            const form = e.target
+            const filename = form.filename.value
+            const width = form.width.value
+            const height = form.height.value
+
+            const img = new Image()
+            img.src = `/api/images?filename=${filename}&width=${width}&height=${height}`
+            img.onload = () => gallery.appendChild(img)
+            img.onerror = () => alert("Failed to load resized image.")
+        }
+
+        loadGallery() // Initial gallery load
+    </script>
+</body>
+</html>
