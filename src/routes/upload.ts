@@ -1,55 +1,59 @@
+import express, { Request, Response, NextFunction } from 'express';
+import multer from 'multer';
+import uploadMulterInstance from '../middleware/upload.js';
 
-import express, { Request, Response, NextFunction } from 'express'
-import uploadMulterInstance from '../middleware/upload.js'
-import multer from 'multer' 
+const router = express.Router();
 
-const router = express.Router()
-
-router.post(
-  '/',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      await new Promise<void>((resolve, reject) => {
-
-        uploadMulterInstance.single('image')(req, res, (err: any) => {
-          if (err) {
-
-            return reject(err)
-          }
-
-          resolve()
-        })
-      })
-
-      if (req.file) {
-        const filename = req.file.filename
-
-        res.status(200).json({
-          message: 'File uploaded successfully',
-          filename: filename,
-          path: `/images/uploads/${filename}`,
-        })
-        return
-      } else {
-        res.status(400).json({ message: 'No file uploaded or invalid file type' })
-        return 
-      }
-    } catch (err: any) {
-      if (err instanceof multer.MulterError) {
-
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          res.status(400).json({ message: 'File too large' })
-          return 
+// Handler function for uploading image
+const uploadHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      uploadMulterInstance.single('image')(req, res, (err: any) => {
+        if (err) {
+          return reject(err);
         }
+        resolve();
+      });
+    });
 
-        res.status(400).json({ message: err.message })
-        return 
+    if (!req.file) {
+      res.status(400).json({ message: 'No file uploaded or invalid file type' });
+      return;
+    }
+
+    // Check mimetype (only JPG allowed)
+    if (req.file.mimetype !== 'image/jpeg') {
+      res.status(400).json({ message: 'Only JPG files are supported' });
+      return;
+    }
+
+    const filename = req.file.filename;
+
+    res.status(200).json({
+      message: 'File uploaded successfully',
+      filename,
+      path: `/images/uploads/${filename}`,
+    });
+  } catch (err: any) {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        res.status(400).json({ message: 'File too large' });
+        return;
       }
 
-      next(err)
+      res.status(400).json({ message: err.message });
+      return;
     }
+
+    next(err); // Pass to global error handler
   }
+};
 
-)
+// Use the handler in the route
+router.post('/', uploadHandler);
 
-export default router
+export default router;

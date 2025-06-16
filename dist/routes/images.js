@@ -1,0 +1,35 @@
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { resizeImage } from '../utils/imageProcessor.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const router = express.Router();
+router.get('/gallery', (_req, res) => {
+    const fullDir = path.join(__dirname, '../../images/full');
+    fs.readdir(fullDir, (err, files) => {
+        if (err) {
+            res.status(500).send('Failed to read image folder');
+            return;
+        }
+        const jpgFiles = files.filter((file) => file.toLowerCase().endsWith('.jpg'));
+        res.json(jpgFiles);
+    });
+});
+router.get('/', async (req, res) => {
+    const { filename, width, height } = req.query;
+    if (!filename || !width || !height) {
+        res.status(400).send('Missing required parameters');
+        return;
+    }
+    try {
+        const resizedImagePath = await resizeImage(filename, parseInt(width), parseInt(height));
+        res.sendFile(resizedImagePath);
+    }
+    catch (err) {
+        console.error('Image processing failed:', err);
+        res.status(500).send('Image processing failed');
+    }
+});
+export default router;
