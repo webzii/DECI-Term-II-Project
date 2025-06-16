@@ -1,8 +1,8 @@
-import express, { Request, Response, NextFunction } from 'express';
-import multer from 'multer';
-import uploadMulterInstance from '../middleware/upload.js';
+import express, { Request, Response, NextFunction } from 'express'
+import multer from 'multer'
+import uploadMulterInstance from '../middleware/upload.js'
 
-const router = express.Router();
+const router = express.Router()
 
 // Handler function for uploading image
 const uploadHandler = async (
@@ -14,46 +14,46 @@ const uploadHandler = async (
     await new Promise<void>((resolve, reject) => {
       uploadMulterInstance.single('image')(req, res, (err: any) => {
         if (err) {
-          return reject(err);
+          return reject(err)
         }
-        resolve();
-      });
-    });
+        resolve()
+      })
+    })
 
     if (!req.file) {
-      res.status(400).json({ message: 'No file uploaded or invalid file type' });
-      return;
+      res.status(400).json({ message: 'No file uploaded or invalid file type' })
+      return
     }
 
     // Check mimetype (only JPG allowed)
     if (req.file.mimetype !== 'image/jpeg') {
-      res.status(400).json({ message: 'Only JPG files are supported' });
-      return;
+      res.status(400).json({ message: 'Only JPG files are supported' })
+      return
     }
 
-    const filename = req.file.filename;
+    const filename = req.file.filename
 
     res.status(200).json({
       message: 'File uploaded successfully',
       filename,
       path: `/images/uploads/${filename}`,
-    });
+    })
   } catch (err: any) {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        res.status(400).json({ message: 'File too large' });
-        return;
+        res.status(400).json({ message: 'File too large' })
+        return
       }
 
-      res.status(400).json({ message: err.message });
-      return;
+      res.status(400).json({ message: err.message })
+      return
     }
 
-    next(err); // Pass to global error handler
+    next(err) // Pass to global error handler
   }
-};
+}
 
 // Use the handler in the route
-router.post('/', uploadHandler);
+router.post('/', uploadHandler)
 
-export default router;
+export default router
