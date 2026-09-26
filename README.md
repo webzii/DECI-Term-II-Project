@@ -98,6 +98,3 @@ My-image-app/
 ├── .prettierrc
 ```
 
-## 👨‍💻 Author
-
-Mohamed Mohamed Abdelrahman
